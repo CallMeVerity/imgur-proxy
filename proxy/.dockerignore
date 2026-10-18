@@ -1,0 +1,5 @@
+.git
+imgur-proxy
+Dockerfile
+.dockerignore
+*.md
