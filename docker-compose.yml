@@ -12,7 +12,6 @@ services:
       - WIREGUARD_ADDRESSES=${IMGUR_WIREGUARD_ADDRESSES}
       - WIREGUARD_PRESHARED_KEY=${IMGUR_WIREGUARD_PRESHARED_KEY}
       - SERVER_COUNTRIES=Germany
-      - HTTPPROXY=on
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "ping", "-c", "1", "8.8.8.8"]
@@ -22,8 +21,7 @@ services:
 
   imgur-proxy:
     build: ./proxy
-    environment:
-      - HTTPS_PROXY=http://gluetun:8888
+    network_mode: service:gluetun
     depends_on:
       gluetun:
         condition: service_healthy
