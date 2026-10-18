@@ -1,5 +1,5 @@
 export default defineBackground(() => {
-  const PROXY = 'http://localhost:8080';
+  const PROXY = 'https://imgur.nathan.rip/';
 
   const { RuleActionType, ResourceType } = browser.declarativeNetRequest;
 

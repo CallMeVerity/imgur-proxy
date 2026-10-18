@@ -1,0 +1,30 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=protonvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${IMGUR_WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${IMGUR_WIREGUARD_ADDRESSES}
+      - WIREGUARD_PRESHARED_KEY=${IMGUR_WIREGUARD_PRESHARED_KEY}
+      - SERVER_COUNTRIES=United States
+      - HTTPPROXY=on
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ping", "-c", "1", "8.8.8.8"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  imgur-proxy:
+    build: ./proxy
+    environment:
+      - HTTPS_PROXY=http://gluetun:8888
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    restart: unless-stopped

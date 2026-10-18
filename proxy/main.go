@@ -4,10 +4,18 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"regexp"
 )
+
+var allowed = regexp.MustCompile(`^/[A-Za-z0-9]+\.(png|jpe?g|gif|webp)$`)
 
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if !allowed.MatchString(r.URL.Path) {
+			http.NotFound(w, r)
+			return
+		}
+
 		req, err := http.NewRequest("GET", "https://i.imgur.com"+r.URL.RequestURI(), nil)
 		if err != nil {
 			http.Error(w, "bad request", 400)
